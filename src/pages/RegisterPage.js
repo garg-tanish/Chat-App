@@ -7,14 +7,18 @@ import { IoClose } from "react-icons/io5";
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+
 const RegisterPage = () => {
+
   const [otp, setOtp] = React.useState()
   const [otpSent, setOtpSent] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
   const [uploadPhoto, setUploadPhoto] = React.useState("")
   const [showPassword, setShowPassword] = React.useState(false)
   const [emailVarified, setEmailVerified] = React.useState(false)
+
   const navigate = useNavigate()
+
   const [data, setData] = React.useState({
     name: "",
     email: "",
