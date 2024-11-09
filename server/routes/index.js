@@ -1,0 +1,31 @@
+const express = require('express')
+const logout = require('../controller/logout')
+const sendOtp = require('../controller/sendOtp')
+const blockUser = require('../controller/blockUser')
+const checkUser = require('../controller/checkUser')
+const deleteChat = require('../controller/deleteChat')
+const checkEmail = require('../controller/checkEmail')
+const searchUser = require('../controller/searchUser')
+const userDetails = require('../controller/userDetails')
+const registerUser = require('../controller/registerUser')
+const checkPassword = require('../controller/checkPassword')
+const changePassword = require('../controller/changePassword')
+const updateUserDetails = require('../controller/updateUserDetails')
+
+const router = express.Router()
+
+router.post('/email', checkEmail)
+router.post('/send-otp', sendOtp)
+router.post('/block-user', blockUser)
+router.post('/check-user', checkUser)
+router.post('/register', registerUser)
+router.post('/delete-chat', deleteChat)
+router.post('/password', checkPassword)
+router.post("/search-user", searchUser)
+router.post('/update-user', updateUserDetails)
+router.post('/change-password', changePassword)
+
+router.get('/logout', logout)
+router.get('/user-details', userDetails)
+
+module.exports = router
