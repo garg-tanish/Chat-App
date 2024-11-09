@@ -4,8 +4,8 @@ const UserModel = require('../models/UserModel')
 const getConversation = require('../helpers/getConversation')
 const getUserDetailsFromToken = require('../helpers/getUserDetailsFromToken')
 
-const { Server } = require('socket.io')
-const { ConversationModel, MessageModel } = require('../models/ConversationModel')
+const {Server} = require('socket.io')
+const {ConversationModel, MessageModel} = require('../models/ConversationModel')
 
 const app = express()
 
@@ -24,11 +24,10 @@ const io = new Server(server, {
 io.on('connection', async (socket) => {
     const token = socket.handshake.auth.token
 
-    //current user details 
+    //current user details
     const user = await getUserDetailsFromToken(token)
-
     //create a room
-    socket.join(user?._id)
+    socket.join(user?._id.toString())
     onlineUser.add(user?._id?.toString())
 
     io.emit('onlineUser', Array.from(onlineUser))
@@ -50,10 +49,10 @@ io.on('connection', async (socket) => {
         //get previous message
         const getConversationMessage = await ConversationModel.findOne({
             "$or": [
-                { sender: user?._id, receiver: userId },
-                { sender: userId, receiver: user?._id }
+                {sender: user?._id, receiver: userId},
+                {sender: userId, receiver: user?._id}
             ]
-        }).populate('messages').sort({ updatedAt: -1 })
+        }).populate('messages').sort({updatedAt: -1})
 
         socket.emit('message', getConversationMessage?.messages || [])
     })
@@ -62,8 +61,8 @@ io.on('connection', async (socket) => {
     socket.on('new message', async (data) => {
         let conversation = await ConversationModel.findOne({
             "$or": [
-                { sender: data?.sender, receiver: data?.receiver },
-                { sender: data?.receiver, receiver: data?.sender }
+                {sender: data?.sender, receiver: data?.receiver},
+                {sender: data?.receiver, receiver: data?.sender}
             ]
         })
 
@@ -84,16 +83,16 @@ io.on('connection', async (socket) => {
 
         const saveMessage = await message.save()
 
-        const updateConversation = await ConversationModel.updateOne({ _id: conversation?._id }, {
-            "$push": { messages: saveMessage?._id }
+        const updateConversation = await ConversationModel.updateOne({_id: conversation?._id}, {
+            "$push": {messages: saveMessage?._id}
         })
 
         const getConversationMessage = await ConversationModel.findOne({
             "$or": [
-                { sender: data?.sender, receiver: data?.receiver },
-                { sender: data?.receiver, receiver: data?.sender }
+                {sender: data?.sender, receiver: data?.receiver},
+                {sender: data?.receiver, receiver: data?.sender}
             ]
-        }).populate('messages').sort({ updatedAt: -1 })
+        }).populate('messages').sort({updatedAt: -1})
 
         io.to(data?.sender).emit('message', getConversationMessage?.messages || [])
         io.to(data?.receiver).emit('message', getConversationMessage?.messages || [])
@@ -101,7 +100,6 @@ io.on('connection', async (socket) => {
         //send conversation
         const conversationSender = await getConversation(data?.sender)
         const conversationReceiver = await getConversation(data?.receiver)
-
         io.to(data?.sender).emit('conversation', conversationSender)
         io.to(data?.receiver).emit('conversation', conversationReceiver)
     })
@@ -116,16 +114,16 @@ io.on('connection', async (socket) => {
     socket.on('seen', async (msgByUserId) => {
         let conversation = await ConversationModel.findOne({
             "$or": [
-                { sender: user?._id, receiver: msgByUserId },
-                { sender: msgByUserId, receiver: user?._id }
+                {sender: user?._id, receiver: msgByUserId},
+                {sender: msgByUserId, receiver: user?._id}
             ]
         })
 
         const conversationMessageId = conversation?.messages || []
 
         await MessageModel.updateMany(
-            { _id: { "$in": conversationMessageId }, msgByUserId: msgByUserId },
-            { "$set": { seen: true } }
+            {_id: {"$in": conversationMessageId}, msgByUserId: msgByUserId},
+            {"$set": {seen: true}}
         )
 
         //send conversation
@@ -142,4 +140,4 @@ io.on('connection', async (socket) => {
     })
 })
 
-module.exports = { app, server }
+module.exports = {app, server}

@@ -50,7 +50,6 @@ const MessagePage = () => {
     if (currentMessage.current) {
       currentMessage.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
     }
-    console.log(allMessage)
   }, [allMessage])
 
   React.useEffect(() => {

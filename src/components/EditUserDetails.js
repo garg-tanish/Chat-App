@@ -88,7 +88,6 @@ const EditUserDetails = ({ onClose, user }) => {
       }
 
     } catch (error) {
-      console.log(error)
       taost.error(error?.response?.data?.message)
     }
   }
