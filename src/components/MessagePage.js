@@ -215,7 +215,7 @@ const MessagePage = () => {
           {
             allMessage.map((msg, index) => {
               return (
-                <div key={index} className={` p-1 py-1 rounded w-fit max-w-[280px] md:max-w-sm lg:max-w-md text-break text-wrap ${user._id === msg?.msgByUserId ? "ml-auto bg-teal-100" : "bg-white"}`}>
+                <div key={index} className={`p-1 rounded w-fit max-w-[280px] md:max-w-sm lg:max-w-md text-break text-wrap ${user._id === msg?.msgByUserId ? "ml-auto bg-teal-100" : "bg-white"}`}>
                   <div className='w-full relative'>
                     {
                       msg?.imageUrl && (
@@ -237,7 +237,7 @@ const MessagePage = () => {
                     }
                   </div>
                   <p className='px-2'>{msg.text}</p>
-                  <p className='text-xs ml-auto w-fit'>{moment(msg.createdAt).format('hh:mm')}</p>
+                  <p className='text-xs ml-auto w-fit'>{moment(msg.createdAt).format('hh:mm A')}</p>
                 </div>
               )
             })
@@ -284,11 +284,10 @@ const MessagePage = () => {
         }
 
         {
-          loading && (
-            <div className='w-full h-full flex sticky bottom-0 justify-center items-center'>
-              <Loading />
-            </div>
-          )
+          loading &&
+          (<div className='fixed top-0 bottom-0 left-0 right-0 flex justify-center items-center bg-gray-700 bg-opacity-40 z-10'>
+            <Loading />
+          </div>)
         }
       </section>
 
