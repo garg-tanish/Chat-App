@@ -109,7 +109,7 @@ const LoginPage = () => {
 
         <h1 className='text-center mt-2 fw-bold' style={{ fontSize: "25px" }}>Login</h1>
 
-        <div className="form-floating mt-12">
+        <div className="form-floating mt-10">
           <input name="email" type="email" className="form-control" id="floatingEmail" placeholder="name@example.com" value={data.email} onChange={handleOnChange} required autoFocus readOnly={isEmailValid} />
           <label htmlFor="floatingEmail">Email address</label>
         </div>

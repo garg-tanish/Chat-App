@@ -178,7 +178,7 @@ const RegisterPage = () => {
           !otpSent ?
             <form onSubmit={sendOtp}>
               <>
-                <div className="form-floating mt-12">
+                <div className="form-floating mt-10">
                   <input name="email" type="email" className="form-control" id="floatingEmail" placeholder="name@example.com" value={data.email} onChange={handleOnChange} required autoFocus readOnly={emailVarified} />
                   <label htmlFor="floatingEmail">Email address</label>
                 </div>
@@ -232,21 +232,21 @@ const RegisterPage = () => {
                     />
                   </div>
 
-                  <button type="submit" className="btn btn-primary w-100">Send Otp</button>
+                  <button type="submit" className="btn btn-primary mb-3 w-100">Send Otp</button>
                 </>
               }
             </form>
             :
             <form onSubmit={handleRegisterSubmit}>
-              <div className="form-floating mt-12">
+              <div className="form-floating mt-10">
                 <input name="otp" type="number" className="form-control" id="floatingLabel" value={otp} onChange={handleOtpChange} required autoFocus />
                 <label htmlFor="floatingLabel">Enter Otp</label>
               </div>
-              <button type="submit" className="btn btn-primary mt-3 w-100">Verify Otp</button>
+              <button type="submit" className="btn btn-primary my-3 w-100">Verify Otp</button>
             </form>
         }
 
-        <p className='mt-3 text-center'>Already have an account? <Link to={"/login"} className='hover:text-primary font-semibold text-decoration-underline'>Login</Link></p>
+        <p className='text-center'>Already have an account? <Link to={"/login"} className='hover:text-primary font-semibold text-decoration-underline'>Login</Link></p>
 
         {loading &&
           (<div className='fixed top-0 bottom-0 left-0 right-0 flex justify-center items-center bg-gray-700 bg-opacity-40 z-10'>

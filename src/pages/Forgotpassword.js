@@ -132,11 +132,11 @@ const Forgotpassword = () => {
           <form onSubmit={sendOtp}>
 
             <>
-              <div className="form-floating mt-12">
+              <div className="form-floating mt-10">
                 <input name="email" type="email" className="form-control" id="floatingEmail" placeholder="name@example.com" value={data.email} onChange={handleOnChange} required autoFocus readOnly={isEmailValid} />
                 <label htmlFor="floatingEmail">Email address</label>
               </div>
-              <button type="button" className={`btn btn-primary w-100 my-4 d-${isEmailValid && "none"}`} onClick={handleEmailSubmit}>Verify Email</button>
+              <button type="button" className={`btn btn-primary w-100 my-3 d-${isEmailValid && "none"}`} onClick={handleEmailSubmit}>Verify Email</button>
             </>
 
             {
@@ -155,14 +155,14 @@ const Forgotpassword = () => {
                     )}
                   </button>
                 </div>
-                <button type="submit" className="btn btn-primary w-100 my-2">Send Otp</button>
+                <button type="submit" className="btn btn-primary w-100 mb-3">Send Otp</button>
               </>
             }
           </form>
           :
           <form onSubmit={changePassword}>
             <>
-              <div class="form-floating mt-12 mb-2">
+              <div class="form-floating mt-10 mb-2">
                 <input name="otp" type="number" className="form-control" id="floatingInput" value={otp} onChange={handleOtpChange} required />
                 <label htmlFor="floatingInput">Enter Otp</label>
               </div>
