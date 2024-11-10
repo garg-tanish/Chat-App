@@ -23,12 +23,14 @@ const Avatar = ({ userId, name, imageUrl, width, height, bg_color }) => {
     <div className={`text-slate-800 font-bold relative`}>
       {
         imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={name}
-            className='overflow-hidden rounded-full'
-            style={{ height: height, width: width, aspectRatio: 3 / 2, objectFit: "cover" }}
-          />
+          <div style={{ width: width + "px", height: height + "px" }} className={`overflow-hidden rounded-full flex justify-center items-center`}>
+            <img
+              src={imageUrl}
+              alt={name}
+              className='rounded-full'
+              style={{ height: height, width: width, aspectRatio: 3 / 2, objectFit: "cover" }}
+            />
+          </div>
         ) : (
           name ? (
             <div style={{ width: width + "px", height: height + "px" }} className={`overflow-hidden rounded-full flex justify-center items-center text-lg ${bg_color}`}>
