@@ -22,6 +22,7 @@ const MessagePage = () => {
   const currentMessage = React.useRef(null)
 
   const user = useSelector(state => state?.user)
+  const blockedUsers = useSelector(state => state?.user?.blockedUsers)
   const socketConnection = useSelector(state => state?.user?.socketConnection)
 
   const [loading, setLoading] = React.useState(false)
@@ -284,82 +285,90 @@ const MessagePage = () => {
       </section>
 
       {/**send message */}
-      <section className='h-16 bg-white flex items-center px-4'>
-        <div className='relative '>
-          <button onClick={() => {
-            handleUploadImageVideoOpen();
-            setPlusActive(!isPlusActive)
-          }}
-            className={`flex justify-center items-center ${isPlusActive && "bg-primary"} w-11 h-11 rounded-full hover:bg-primary hover:text-white`}>
-            <FaPlus size={20} />
-          </button>
+      {!blockedUsers.find(users => users.block_to === params.userId && users.block_by === user._id) || !blockedUsers.find(users => users.block_by === params.userId && users.block_to === user._id)
+        ?
+        <section section className='h-16 bg-white flex items-center px-4'>
+          <div className='relative '>
+            <button onClick={() => {
+              handleUploadImageVideoOpen();
+              setPlusActive(!isPlusActive)
+            }}
+              className={`flex justify-center items-center ${isPlusActive && "bg-primary"} w-11 h-11 rounded-full hover:bg-primary hover:text-white`}>
+              <FaPlus size={20} />
+            </button>
 
-          {/**video and image */}
-          {
-            openImageVideoUpload && (
-              <div className='bg-white shadow rounded absolute bottom-14 w-36 p-2'>
-                <form>
-                  <label htmlFor='uploadImage' className='flex items-center p-2 px-3 gap-3 hover:bg-slate-200 cursor-pointer'>
-                    <div className='text-primary'>
-                      <FaImage size={18} />
-                    </div>
-                    <p>Image</p>
-                  </label>
-                  <label htmlFor='uploadVideo' className='flex items-center p-2 px-3 gap-3 hover:bg-slate-200 cursor-pointer'>
-                    <div className='text-purple-500'>
-                      <FaVideo size={18} />
-                    </div>
-                    <p>Video</p>
-                  </label>
+            {/**video and image */}
+            {
+              openImageVideoUpload && (
+                <div className='bg-white shadow rounded absolute bottom-14 w-36 p-2'>
+                  <form>
+                    <label htmlFor='uploadImage' className='flex items-center p-2 px-3 gap-3 hover:bg-slate-200 cursor-pointer'>
+                      <div className='text-primary'>
+                        <FaImage size={18} />
+                      </div>
+                      <p>Image</p>
+                    </label>
+                    <label htmlFor='uploadVideo' className='flex items-center p-2 px-3 gap-3 hover:bg-slate-200 cursor-pointer'>
+                      <div className='text-purple-500'>
+                        <FaVideo size={18} />
+                      </div>
+                      <p>Video</p>
+                    </label>
 
-                  <input
-                    type='file'
-                    id='uploadImage'
-                    onChange={handleUploadImage}
-                    className='hidden'
-                  />
+                    <input
+                      type='file'
+                      id='uploadImage'
+                      onChange={handleUploadImage}
+                      className='hidden'
+                    />
 
-                  <input
-                    type='file'
-                    id='uploadVideo'
-                    onChange={handleUploadVideo}
-                    className='hidden'
-                  />
-                </form>
-              </div>
-            )
-          }
-        </div>
-
-        <div className='flex justify-center items-center'>
-          <button className={`${isEmojiPicker && "bg-primary"} w-11 h-11 rounded-full hover:bg-primary hover:text-white`} onClick={() => { setEmojiPicker(!isEmojiPicker) }}>
-            <FontAwesomeIcon icon={faFaceSmile} />
-          </button>
-        </div>
-
-        {isEmojiPicker &&
-          <div style={{ position: "fixed", left: "100", marginBottom: "500px" }}>
-            <Picker data={data} theme="light" onEmojiSelect={handleEmojiSelect} />
+                    <input
+                      type='file'
+                      id='uploadVideo'
+                      onChange={handleUploadVideo}
+                      className='hidden'
+                    />
+                  </form>
+                </div>
+              )
+            }
           </div>
-        }
 
-        {/**input box */}
-        <form className='h-full w-full flex gap-2' onSubmit={handleSendMessage}>
-          <input type="text" className="form-control m-2" id="FormControlInput1" value={message.text} onChange={handleOnChange} placeholder="Type here..." autoComplete='off' />
-          <button className={`text-${(message.text || message.imageUrl || message.videoUrl) ? 'primary' : "secondary"}`} disabled={!(message.text || message.imageUrl || message.videoUrl)}>
-            <IoMdSend size={28} />
-          </button>
-        </form>
+          <div className='flex justify-center items-center'>
+            <button className={`${isEmojiPicker && "bg-primary"} w-11 h-11 rounded-full hover:bg-primary hover:text-white`} onClick={() => { setEmojiPicker(!isEmojiPicker) }}>
+              <FontAwesomeIcon icon={faFaceSmile} />
+            </button>
+          </div>
 
-        {/* for three dots */}
-        {
-          clickedDot && (
-            <DotAction onClose={() => setClickedDot(false)} dataUser={dataUser} user={user} allMessage={allMessage} />
-          )
-        }
+          {isEmojiPicker &&
+            <div style={{ position: "fixed", left: "100", marginBottom: "500px" }}>
+              <Picker data={data} theme="light" onEmojiSelect={handleEmojiSelect} />
+            </div>
+          }
 
-      </section>
-    </div>
+          {/**input box */}
+          <form className='h-full w-full flex gap-2' onSubmit={handleSendMessage}>
+            <input type="text" className="form-control m-2" id="FormControlInput1" value={message.text} onChange={handleOnChange} placeholder="Type here..." autoComplete='off' />
+            <button className={`text-${(message.text || message.imageUrl || message.videoUrl) ? 'primary' : "secondary"}`} disabled={!(message.text || message.imageUrl || message.videoUrl)}>
+              <IoMdSend size={28} />
+            </button>
+          </form>
+
+        </section>
+        :
+        <section section className='flex items-center justify-center h-16 bg-black text-white px-4'>
+          <p>This conversation is blocked.</p>
+        </section>
+      }
+
+      {/* for three dots */}
+      {
+        clickedDot && (
+          <DotAction onClose={() => setClickedDot(false)} dataUser={dataUser} user={user} allMessage={allMessage} />
+        )
+      }
+
+    </div >
   )
 }
 
