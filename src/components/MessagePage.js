@@ -147,7 +147,6 @@ const MessagePage = () => {
 
     if (message.text || message.imageUrl || message.videoUrl) {
       if (socketConnection) {
-        const date = new Date().toISOString()
         socketConnection.emit('new message', {
           sender: user?._id,
           receiver: params.userId,
@@ -161,13 +160,6 @@ const MessagePage = () => {
           imageUrl: "",
           videoUrl: ""
         })
-        setAllMessage(prev => [...prev, {
-          createdAt: date,
-          msgByUserId: user?._id,
-          seen: true,
-          text: message.text,
-          updatedAt: date
-        }])
       }
     }
   }
