@@ -6,11 +6,11 @@ import Loading from './Loading';
 import SearchUser from './SearchUser';
 import EditUserDetails from './EditUserDetails';
 import { BiLogOut } from "react-icons/bi";
-import { logout } from '../redux/userSlice';
 import { FaImage, FaVideo } from "react-icons/fa6";
 import { useDispatch, useSelector } from 'react-redux';
 import { IoChatbubbleEllipses } from "react-icons/io5";
 import { FaUserPlus, FaArrowLeft } from "react-icons/fa";
+import { logout, setBlockedUsers } from '../redux/userSlice';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 
 const Sidebar = () => {
@@ -37,6 +37,10 @@ const Sidebar = () => {
     setLoading(true)
     if (socketConnection) {
       socketConnection.emit('sidebar', user._id)
+
+      socketConnection.on('block-list', (data) => {
+        dispatch(setBlockedUsers(data))
+      })
 
       socketConnection.on('conversation', (data) => {
         const conversationUserData = data.map((conversationUser) => {
