@@ -1,6 +1,7 @@
 const http = require('http')
 const express = require('express')
 const UserModel = require('../models/UserModel')
+const BlockUsers = require('../models/BlockUserModel')
 const getConversation = require('../helpers/getConversation')
 const getUserDetailsFromToken = require('../helpers/getUserDetailsFromToken')
 
@@ -31,7 +32,14 @@ io.on('connection', async (socket) => {
     socket.join(user?._id?.toString())
     onlineUser.add(user?._id?.toString())
 
-    io.emit('onlineUser', Array.from(onlineUser))
+    io.emit('onlineUser', Array.from(onlineUser));
+    const blocked = await BlockUsers.find({});
+    io.emit('block-list', blocked);
+
+    socket.on('block-list', async () => {
+        const blocked = await BlockUsers.find({});
+        socket.emit('block-list', blocked);
+    })
 
     // Message-Page
     socket.on('message-page', async (userId) => {
@@ -138,6 +146,7 @@ io.on('connection', async (socket) => {
     //disconnect
     socket.on('disconnect', () => {
         onlineUser.delete(user?._id?.toString())
+        io.emit('onlineUser', Array.from(onlineUser))
     })
 })
 
