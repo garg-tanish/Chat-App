@@ -1,28 +1,30 @@
-const ConversationModel = require('../models/ConversationModel')
+const BlockUserModel = require('../models/BlockUserModel')
 const getUserDetailsFromToken = require('../helpers/getUserDetailsFromToken')
 
-async function blockUser(request, response) {
+const blockUser = (type) => async (request, response) => {
 
   try {
     const token = request.cookies.token || ""
     const user = await getUserDetailsFromToken(token)
 
-    const { receiver } = request.body
+    const { id } = request.params
 
-    const conversation = await ConversationModel.findOne({
-      sender: user._id,
-      receiver: receiver._id
-    });
-
-    const blockUser = !conversation.blockUser
-
-    await ConversationModel.updateOne({ _id: conversation._id }, { blockUser })
-
-    const userInfomation = await ConversationModel.findById(conversation._id)
+    if (type === 'block') {
+      const u = new BlockUserModel({
+        block_by: user._id?.toString(),
+        block_to: id
+      })
+      await u.save()
+    } else {
+      await BlockUserModel.deleteMany({
+        block_by: user._id?.toString(),
+        block_to: id
+      })
+    }
 
     return response.json({
-      message: "User blocked successfully",
-      data: userInfomation,
+      message: `User ${type} successfull`,
+      data: null,
       success: true,
       error: false
     })
