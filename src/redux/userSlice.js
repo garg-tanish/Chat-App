@@ -4,9 +4,10 @@ const initialState = {
   _id: "",
   name: "",
   email: "",
-  profile_pic: "",
   token: "",
+  profile_pic: "",
   onlineUser: [],
+  blockedUsers: [],
   socketConnection: null
 }
 
@@ -15,34 +16,42 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      state._id = action.payload._id
-      state.name = action.payload.name
-      state.email = action.payload.email
-      state.profile_pic = action.payload.profile_pic
-      state.bg_color = action.payload.bg_color
+      return {
+        ...state,
+        ...action.payload
+      }
     },
     setToken: (state, action) => {
-      state.token = action.payload
+      return {
+        ...state,
+        token: action.payload
+      }
     },
-    logout: (state) => {
-      state._id = ""
-      state.name = ""
-      state.email = ""
-      state.profile_pic = ""
-      state.token = ""
-      state.socketConnection = null
-      state.bg_color = ""
+    logout: () => {
+      return initialState
     },
     setOnlineUser: (state, action) => {
-      state.onlineUser = action.payload
+      return {
+        ...state,
+        onlineUser: action.payload
+      }
     },
     setSocketConnection: (state, action) => {
-      state.socketConnection = action.payload
-    }
+      return {
+        ...state,
+        socketConnection: action.payload
+      }
+    },
+    setBlockedUsers: (state, action) => {
+      return {
+        ...state,
+        blockedUsers: action.payload
+      }
+    },
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setUser, setToken, logout, setOnlineUser, setSocketConnection } = userSlice.actions
+export const { setUser, setToken, logout, setOnlineUser, setSocketConnection, setBlockedUsers } = userSlice.actions
 
 export default userSlice.reducer
