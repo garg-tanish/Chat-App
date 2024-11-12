@@ -85,6 +85,7 @@ const MessagePage = () => {
 
     setLoading(true)
     const uploadPhoto = await uploadFile(file)
+    setPlusActive(false)
     setLoading(false)
     setOpenImageVideoUpload(false)
 
@@ -110,6 +111,7 @@ const MessagePage = () => {
 
     setLoading(true)
     const uploadPhoto = await uploadFile(file)
+    setPlusActive(false)
     setLoading(false)
     setOpenImageVideoUpload(false)
 
@@ -285,7 +287,7 @@ const MessagePage = () => {
       </section>
 
       {/**send message */}
-      {!blockedUsers.find(users => users.block_to === params.userId && users.block_by === user._id) || !blockedUsers.find(users => users.block_by === params.userId && users.block_to === user._id)
+      {!blockedUsers.find(users => users.block_to === params.userId && users.block_by === user._id) && !blockedUsers.find(users => users.block_by === params.userId && users.block_to === user._id)
         ?
         <section section className='h-16 bg-white flex items-center px-4'>
           <div className='relative '>

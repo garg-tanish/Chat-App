@@ -3,11 +3,15 @@ import axios from 'axios'
 import Loading from './Loading';
 import taost from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 export const DotAction = ({ onClose, dataUser, user, allMessage }) => {
 
   const [loading, setLoading] = React.useState(false)
   const [data, setData] = React.useState({ receiver: dataUser })
+
+  const blockedUsers = useSelector(state => state?.user?.blockedUsers)
+  const socketConnection = useSelector(state => state?.user?.socketConnection)
 
   const navigate = useNavigate()
 
@@ -17,7 +21,7 @@ export const DotAction = ({ onClose, dataUser, user, allMessage }) => {
     e.stopPropagation()
 
     try {
-      const URL = `${process.env.REACT_APP_BACKEND_URL}/api/block-user`
+      const URL = `${process.env.REACT_APP_BACKEND_URL}/api/${blockedUsers.find(users => users.block_to === data.receiver._id && users.block_by === user._id) ? 'unblock-user' : 'block-user'}/${data.receiver._id}`
 
       const response = await axios({
         method: 'post',
@@ -31,12 +35,14 @@ export const DotAction = ({ onClose, dataUser, user, allMessage }) => {
         setData({ receiver: "" })
         setLoading(false)
         onClose()
-        navigate('/')
+        window.location.reload()
       }
 
     } catch (error) {
       taost.error(error?.response?.data?.message)
       setLoading(false)
+    } finally {
+      socketConnection.emit('block-list', {})
     }
   }
 
@@ -69,46 +75,46 @@ export const DotAction = ({ onClose, dataUser, user, allMessage }) => {
     }
   }
 
-  const handleExportChat = (e) => {
-    setLoading(true)
-    e.preventDefault()
-    e.stopPropagation()
+  // const handleExportChat = (e) => {
+  //   setLoading(true)
+  //   e.preventDefault()
+  //   e.stopPropagation()
 
-    // const PDFDocument = require('pdf-lib');
+  // const PDFDocument = require('pdf-lib');
 
-    // async function generatePDF(chatData) {
-    //   const pdfDoc = await PDFDocument.create();
-    //   const page = pdfDoc.addPage();
+  // async function generatePDF(chatData) {
+  //   const pdfDoc = await PDFDocument.create();
+  //   const page = pdfDoc.addPage();
 
-    //   const { width, height } = page.getSize();
+  //   const { width, height } = page.getSize();
 
-    //   const { content } = page.drawText(formatChatData(chatData), {
-    //     x: 50,
-    //     y: height - 50,
-    //     size: 12,
-    //   });
+  //   const { content } = page.drawText(formatChatData(chatData), {
+  //     x: 50,
+  //     y: height - 50,
+  //     size: 12,
+  //   });
 
-    //   page.setWidth(content.width + 50);
-    //   page.setHeight(content.height + 50);
+  //   page.setWidth(content.width + 50);
+  //   page.setHeight(content.height + 50);
 
-    //   const pdfBytes = await pdfDoc.save();
+  //   const pdfBytes = await pdfDoc.save();
 
-    //   // Send the PDF to the user (e.g., stream to browser or save to file)
-    //   // ...
-    // }
+  //   // Send the PDF to the user (e.g., stream to browser or save to file)
+  //   // ...
+  // }
 
-    // function formatChatData(chatData) {
-    //   // Format the chat data into a string suitable for PDF generation
-    //   // For example, you might create an HTML string with message content, timestamps, and user information
-    //   return chatData.map(message => {
-    //     return `${message.user}: ${message.text}\n`;
-    //   }).join('\n');
-    // }
-  }
+  // function formatChatData(chatData) {
+  //   // Format the chat data into a string suitable for PDF generation
+  //   // For example, you might create an HTML string with message content, timestamps, and user information
+  //   return chatData.map(message => {
+  //     return `${message.user}: ${message.text}\n`;
+  //   }).join('\n');
+  // }
+
 
   return (
     <div className="container d-flex flex-col absolute top-16 right-1" style={{ width: "10rem" }}>
-      <button type="button" className="btn btn-light" data-bs-toggle="modal" data-bs-target="#blockModal">Block User</button>
+      <button type="button" className="btn btn-light" data-bs-toggle="modal" data-bs-target="#blockModal">{blockedUsers.find(users => users.block_to === data.receiver._id && users.block_by === user._id) ? 'Unblock' : 'Block'} User</button>
       <button type="button" className="btn btn-light" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete Chat</button>
       {/* <button type="button" className="btn btn-light" data-bs-toggle="modal" data-bs-target="#exportModal">Export Chat</button> */}
 
