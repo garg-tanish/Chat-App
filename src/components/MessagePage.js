@@ -85,7 +85,6 @@ const MessagePage = () => {
 
     setLoading(true)
     const uploadPhoto = await uploadFile(file)
-    setPlusActive(false)
     setLoading(false)
     setOpenImageVideoUpload(false)
 
@@ -98,6 +97,7 @@ const MessagePage = () => {
   }
 
   const handleClearUploadImage = () => {
+    setPlusActive(false)
     setMessage(preve => {
       return {
         ...preve,
@@ -111,7 +111,6 @@ const MessagePage = () => {
 
     setLoading(true)
     const uploadPhoto = await uploadFile(file)
-    setPlusActive(false)
     setLoading(false)
     setOpenImageVideoUpload(false)
 
@@ -124,6 +123,7 @@ const MessagePage = () => {
   }
 
   const handleClearUploadVideo = () => {
+    setPlusActive(false)
     setMessage(preve => {
       return {
         ...preve,
@@ -146,6 +146,7 @@ const MessagePage = () => {
 
     setClickedDot(false)
     setEmojiPicker(false)
+    setPlusActive(false)
     setOpenImageVideoUpload(false)
 
     if (message.text || message.imageUrl || message.videoUrl) {
@@ -294,7 +295,7 @@ const MessagePage = () => {
             <button onClick={() => {
               handleUploadImageVideoOpen();
               setPlusActive(!isPlusActive)
-            }}
+            }} disabled={message.imageUrl || message.videoUrl}
               className={`flex justify-center items-center ${isPlusActive && "bg-primary"} w-11 h-11 rounded-full hover:bg-primary hover:text-white`}>
               <FaPlus size={20} />
             </button>
@@ -322,6 +323,7 @@ const MessagePage = () => {
                       id='uploadImage'
                       onChange={handleUploadImage}
                       className='hidden'
+                      accept='image/*'
                     />
 
                     <input
@@ -329,6 +331,7 @@ const MessagePage = () => {
                       id='uploadVideo'
                       onChange={handleUploadVideo}
                       className='hidden'
+                      accept='video/*'
                     />
                   </form>
                 </div>
