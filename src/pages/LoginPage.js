@@ -19,6 +19,10 @@ const LoginPage = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
+  React.useEffect(() => {
+    document.title = 'Login'
+  }, [])
+
   const handleOnChange = (e) => {
     const { name, value } = e.target
 
@@ -36,7 +40,7 @@ const LoginPage = () => {
     const URL = `${process.env.REACT_APP_BACKEND_URL}/api/email`
 
     try {
-      if (data.email) {
+      if (data.email && data.email.length >= 11) {
         const response = await axios.post(URL, data)
         if (response.data.success) {
           setEmailValid(true)
@@ -47,7 +51,7 @@ const LoginPage = () => {
       }
       else {
         setLoading(false)
-        toast.error("Please Enter Something First.")
+        toast.error("Enter valid Email.")
       }
     } catch (error) {
       toast.error(error?.response?.data?.message)
@@ -63,22 +67,28 @@ const LoginPage = () => {
     const URL = `${process.env.REACT_APP_BACKEND_URL}/api/password`
 
     try {
-      const response = await axios({
-        method: 'post',
-        url: URL,
-        data: {
-          userId: data.userId,
-          password: data.password
-        },
-        withCredentials: true
-      })
+      if (data.password) {
+        const response = await axios({
+          method: 'post',
+          url: URL,
+          data: {
+            userId: data.userId,
+            password: data.password
+          },
+          withCredentials: true
+        })
 
-      if (response.data.success) {
-        toast.success(response.data.message)
-        dispatch(setToken(response?.data?.token))
-        localStorage.setItem('token', response?.data?.token)
+        if (response.data.success) {
+          toast.success(response.data.message)
+          dispatch(setToken(response?.data?.token))
+          localStorage.setItem('token', response?.data?.token)
+          setLoading(false)
+          navigate('/')
+        }
+      }
+      else {
         setLoading(false)
-        navigate('/')
+        toast.error("Password cannot be empty.")
       }
     } catch (error) {
       toast.error(error?.response?.data?.message)

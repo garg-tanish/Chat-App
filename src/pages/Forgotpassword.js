@@ -33,12 +33,18 @@ const Forgotpassword = () => {
     const URL = `${process.env.REACT_APP_BACKEND_URL}/api/send-otp`
 
     try {
-      const response = await axios.post(URL, data)
+      if (data.password && data.password.length >= 6) {
+        const response = await axios.post(URL, data)
 
-      if (response.data.success) {
-        toast.success(response.data.message)
-        setOtpSent(true)
+        if (response.data.success) {
+          toast.success(response.data.message)
+          setOtpSent(true)
+          setLoading(false)
+        }
+      }
+      else {
         setLoading(false)
+        toast.error("Password must contain atleast 6 digits.")
       }
     } catch (error) {
       toast.error(error?.response?.data?.message)
@@ -63,7 +69,7 @@ const Forgotpassword = () => {
     const URL = `${process.env.REACT_APP_BACKEND_URL}/api/email`
 
     try {
-      if (data.email) {
+      if (data.email && data.email.length >= 11) {
         const response = await axios.post(URL, data)
 
         if (response.data.success) {
@@ -77,7 +83,7 @@ const Forgotpassword = () => {
       } else {
         setLoading(false)
         setEmailValid(false)
-        toast.error("Please Enter Something First.")
+        toast.error("Enter valid Email.")
       }
     } catch (error) {
       toast.error(error?.response?.data?.message)
@@ -93,17 +99,22 @@ const Forgotpassword = () => {
     const URL = `${process.env.REACT_APP_BACKEND_URL}/api/change-password`
 
     try {
+      if (otp && otp.length === 4) {
+        const response = await axios({
+          method: "post",
+          url: URL,
+          data: { email: data.email, password: data.password, otp: otp }
+        })
 
-      const response = await axios({
-        method: "post",
-        url: URL,
-        data: { email: data.email, password: data.password, otp: otp }
-      })
-
-      if (response.data.success) {
-        toast.success(response.data.message)
+        if (response.data.success) {
+          toast.success(response.data.message)
+          setLoading(false)
+          navigate('/login')
+        }
+      }
+      else {
         setLoading(false)
-        navigate('/login')
+        toast.error("Invalid otp.")
       }
     } catch (error) {
       toast.error(error?.response?.data?.message)

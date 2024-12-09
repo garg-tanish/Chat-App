@@ -28,9 +28,11 @@ const Sidebar = () => {
   const navigate = useNavigate()
 
   const handleLogout = () => {
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     dispatch(logout())
     navigate("/login")
     localStorage.clear()
+    window.location.reload()
   }
 
   React.useEffect(() => {
